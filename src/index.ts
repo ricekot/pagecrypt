@@ -10,12 +10,14 @@ import { generatePassword, encryptHTML } from './core'
  * @param {string} inputFile The filename (or path) to the HTML file to encrypt.
  * @param {string} password The password used to encrypt + decrypt the content.
  * @param {number} iterations The number of iterations to derive the key from the password.
+ * @param {string} message The message to display on the password protection page.
  * @returns A promise that will resolve with the encrypted HTML content
  */
 async function encryptFile(
     inputFile: string,
     password: string,
     iterations?: number,
+    message?: string,
 ) {
     let content: string
     try {
@@ -27,7 +29,7 @@ async function encryptFile(
         process.exit(1)
     }
 
-    return await encryptHTML(content, password, iterations)
+    return await encryptHTML(content, password, iterations, message)
 }
 
 /**
@@ -53,6 +55,7 @@ async function saveFile(outputFile: string, content: string) {
  * @param {string} outputFile The filename (or path) where the encrypted HTML file will be saved.
  * @param {string} password The password used to encrypt + decrypt the content.
  * @param {number} iterations The number of iterations to derive the key from the password.
+ * @param {string} message The message to display on the password protection page.
  * @returns A promise that will resolve when the encrypted file has been saved.
  */
 async function encrypt(
@@ -60,8 +63,9 @@ async function encrypt(
     outputFile: string,
     password: string,
     iterations?: number,
+    message?: string,
 ) {
-    const encrypted = await encryptFile(inputFile, password, iterations)
+    const encrypted = await encryptFile(inputFile, password, iterations, message)
     return await saveFile(outputFile, encrypted)
 }
 

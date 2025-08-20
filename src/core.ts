@@ -64,21 +64,25 @@ async function getEncryptedPayload(
  * @param {string} inputHTML The HTML string to encrypt.
  * @param {string} password The password used to encrypt + decrypt the content.
  * @param {number} iterations The number of iterations to derive the key from the password.
+ * @param {string} message The message to display on the password protection page.
  * @returns A promise that will resolve with the encrypted HTML content
  */
 export async function encryptHTML(
     inputHTML: string,
     password: string,
     iterations: number = 2e6,
+    message: string = 'This page is password protected.',
 ) {
-    return (decryptTemplate as string).replace(
-        '<encrypted-payload></encrypted-payload>',
-        `<pre class="hidden" data-i="${iterations.toExponential()}">${await getEncryptedPayload(
-            inputHTML,
-            password,
-            iterations,
-        )}</pre>`,
-    )
+    return (decryptTemplate as string)
+        .replace('{{MESSAGE_PLACEHOLDER}}', message)
+        .replace(
+            '<encrypted-payload></encrypted-payload>',
+            `<pre class="hidden" data-i="${iterations.toExponential()}">${await getEncryptedPayload(
+                inputHTML,
+                password,
+                iterations,
+            )}</pre>`,
+        )
 }
 
 /**

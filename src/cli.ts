@@ -10,6 +10,7 @@ const {
     values: {
         'generate-password': generatedLength,
         iterations: passwordIterations,
+        message: customMessage,
         help: printHelp,
         version: printVersion,
     },
@@ -23,6 +24,10 @@ const {
         },
         iterations: {
             short: 'i',
+            type: 'string',
+        },
+        message: {
+            short: 'm',
             type: 'string',
         },
         version: {
@@ -58,7 +63,7 @@ async function main() {
         if (Number.isInteger(length)) {
             const pass = generatePassword(length)
             console.log(`🔐 Encrypting ${src} → ${dest} with 🔑: ${pass}`)
-            await encrypt(src, dest, pass, iterations)
+            await encrypt(src, dest, pass, iterations, customMessage)
         } else {
             console.error(
                 '❌: The <length> must be an integer when using --generate-password <length>',
@@ -67,7 +72,7 @@ async function main() {
         }
     } else if (password) {
         console.log(`🔐 Encrypting ${src} → ${dest}`)
-        await encrypt(src, dest, password, iterations)
+        await encrypt(src, dest, password, iterations, customMessage)
     } else {
         console.error(
             '❌: Either provide a password or use --generate-password <length>',
@@ -87,6 +92,7 @@ if (printHelp) {
   Options
     -g, --generate-password    Generate a random password with given length. Must be a number if used.
     -i, --iterations           The number of password iterations.
+    -m, --message              Custom message to display on the password protection page.
     -v, --version              Display current version
     -h, --help                 Display this message
 
@@ -96,6 +102,8 @@ if (printHelp) {
     $ pagecrypt index.html encrypted.html -g 64
     $ pagecrypt index.html encrypted.html password --iterations 3e6
     $ pagecrypt index.html encrypted.html -g 64 --i 3e6
+    $ pagecrypt index.html encrypted.html password --message "Enter password to view content"
+    $ pagecrypt index.html encrypted.html -g 64 -m "Private document"
 `)
 } else if (printVersion) {
     console.log(`${name}, ${version}`)
